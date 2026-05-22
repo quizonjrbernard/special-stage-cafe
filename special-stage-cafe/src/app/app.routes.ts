@@ -5,7 +5,6 @@ import { MenuComponent } from './features/menu/menu';
 import { LoginComponent } from './features/auth/login/login';
 import { RegisterComponent } from './features/auth/register/register';
 
-
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'menu', component: MenuComponent },
