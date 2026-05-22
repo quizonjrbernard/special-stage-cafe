@@ -5,9 +5,11 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:ssr": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:special-stage-cafe": "node dist/special-stage-cafe/server/server.mjs"
+    "serve:ssr:special-stage-cafe": "node dist/special-stage-cafe/server/server.mjs",
+    "serve:ssr": "npm run build:ssr && npm run serve:ssr:special-stage-cafe"
   },
   "private": true,
   "packageManager": "npm@11.13.0",

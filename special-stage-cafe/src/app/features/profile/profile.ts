@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
+import { OrdersService } from '../../services/orders.service';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -12,6 +13,8 @@ import { RouterLink } from '@angular/router';
 })
 export class ProfileComponent {
   auth = inject(AuthService);
+  ordersService = inject(OrdersService);
+  orders = this.ordersService.getOrders();
 
   logout() { this.auth.logout(); }
 }

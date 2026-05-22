@@ -12,4 +12,24 @@
   <div class="mt-6">
     <button *ngIf="auth.user()" (click)="logout()" class="rounded-full bg-rose-500 px-4 py-2 text-white">Sign out</button>
   </div>
+
+  <section *ngIf="auth.user() && orders.length > 0" class="mt-8 bg-slate-50 rounded-2xl p-6">
+    <h2 class="text-xl font-semibold mb-4">Recent orders</h2>
+    <div class="space-y-4">
+      <div *ngFor="let order of orders" class="rounded-xl border p-4">
+        <div class="flex justify-between items-start gap-4">
+          <div>
+            <div class="font-semibold">Order #{{ order.id }}</div>
+            <div class="text-sm text-slate-600">Placed {{ order.createdAt | date:'medium' }}</div>
+          </div>
+          <div class="font-bold">AED {{ order.total }}</div>
+        </div>
+        <div class="mt-3 text-slate-700">
+          <div *ngIf="order.name"><strong>Name:</strong> {{ order.name }}</div>
+          <div *ngIf="order.email"><strong>Email:</strong> {{ order.email }}</div>
+          <div *ngIf="order.note"><strong>Note:</strong> {{ order.note }}</div>
+        </div>
+      </div>
+    </div>
+  </section>
 </section>

@@ -21,7 +21,7 @@ export class CheckoutComponent {
   email = signal('');
   note = signal('');
   placing = signal(false);
-  success = signal<Order | null>(null as any);
+  success = signal<Order | null>(null);
 
   placeOrder() {
     if (this.cart.items().length === 0) return;
@@ -36,8 +36,9 @@ export class CheckoutComponent {
     });
 
     this.cart.clear();
-    this.success.set(order as any);
+    this.success.set(order);
     this.placing.set(false);
     setTimeout(() => this.router.navigate(['/profile']), 1200);
   }
 }
+
