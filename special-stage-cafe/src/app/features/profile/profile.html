@@ -1,0 +1,15 @@
+<section class="mx-auto max-w-xl bg-white rounded-2xl p-8 shadow">
+  <h1 class="text-2xl font-semibold">Profile</h1>
+  <p *ngIf="auth.user()" class="mt-4">
+    <strong>Name:</strong> {{ auth.user()?.name }}<br />
+    <strong>Email:</strong> {{ auth.user()?.email }}
+  </p>
+
+  <div *ngIf="!auth.user()" class="mt-4">
+    <p class="text-slate-600">Not signed in. <a routerLink="/login" class="text-slate-950 font-semibold underline">Sign in</a></p>
+  </div>
+
+  <div class="mt-6">
+    <button *ngIf="auth.user()" (click)="logout()" class="rounded-full bg-rose-500 px-4 py-2 text-white">Sign out</button>
+  </div>
+</section>

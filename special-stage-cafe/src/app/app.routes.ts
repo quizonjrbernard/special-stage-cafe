@@ -4,10 +4,17 @@ import { HomeComponent } from './features/home/home';
 import { MenuComponent } from './features/menu/menu';
 import { LoginComponent } from './features/auth/login/login';
 import { RegisterComponent } from './features/auth/register/register';
+import { AuthGuard } from './services/auth.guard';
+import { ProfileComponent } from './features/profile/profile';
+import { CartComponent } from './features/cart/cart';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'menu', component: MenuComponent },
+  { path: 'menu', component: MenuComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent }
+  { path: 'register', component: RegisterComponent },
+  { path: 'profile', component: ProfileComponent },
+  { path: 'cart', component: CartComponent },
+  { path: 'checkout', loadComponent: () => import('./features/checkout/checkout').then(m => m.CheckoutComponent) },
+  { path: '**', redirectTo: '' }
 ];

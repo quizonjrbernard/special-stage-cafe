@@ -3,8 +3,17 @@
   <h1 class="text-2xl font-bold">Special Stage Cafe</h1>
 
   <div class="space-x-4">
-    <a routerLink="/">Home</a>
-    <a routerLink="/menu">Menu</a>
-    <a routerLink="/login">Login</a>
+    <a routerLink="/" routerLinkActive="text-amber-300" class="hover:text-amber-300">Home</a>
+    <a routerLink="/menu" routerLinkActive="text-amber-300" class="hover:text-amber-300">Menu</a>
+    <ng-container *ngIf="!auth.isAuthenticated()">
+      <a routerLink="/login" routerLinkActive="text-amber-300" class="hover:text-amber-300">Login</a>
+      <a routerLink="/register" routerLinkActive="text-amber-300" class="hover:text-amber-300">Register</a>
+    </ng-container>
+    <a routerLink="/cart" routerLinkActive="text-amber-300" class="hover:text-amber-300">Cart ({{ cart.items().length }})</a>
+    <a *ngIf="auth.isAuthenticated()" routerLink="/profile" routerLinkActive="text-amber-300" class="hover:text-amber-300">Profile</a>
+    <button *ngIf="auth.isAuthenticated()" (click)="logout()" class="rounded-md bg-amber-400 px-3 py-1 text-slate-950">Logout</button>
   </div>
-</nav>
+</nav>  
+<div *ngIf="auth.isAuthenticated()" class="bg-slate-900 text-slate-200 px-4 py-2 text-right text-sm">
+  Welcome back, {{ auth.user()?.name }}
+</div>
