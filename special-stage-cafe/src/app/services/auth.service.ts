@@ -4,6 +4,7 @@ export interface User {
   name: string;
   email: string;
   password: string;
+  role?: 'admin' | 'user';
 }
 
 @Injectable({
@@ -15,6 +16,7 @@ export class AuthService {
   user = signal<User | null>(_getInitialUser());
 
   isAuthenticated = computed(() => !!this.user());
+  isAdmin = computed(() => this.user()?.role === 'admin');
 
   login(email: string, password: string): boolean {
     const found = this.registeredUsers().find(
@@ -39,7 +41,7 @@ export class AuthService {
       return { success: false, message: 'This email is already registered.' };
     }
 
-    const newUser: User = { name, email, password };
+    const newUser: User = { name, email, password, role: 'user' };
     this.registeredUsers.update((list) => {
       const updated = [...list, newUser];
       try { localStorage.setItem('ssc_users', JSON.stringify(updated)); } catch {}
@@ -58,10 +60,29 @@ export class AuthService {
 }
 
 function _getInitialUsers(): User[] {
+  const defaultAdmin: User = { name: 'Admin', email: 'admin@stagecafe.com', password: 'admin123', role: 'admin' };
+  const defaultGuest: User = { name: 'Stage Guest', email: 'guest@stagecafe.com', password: 'coffee123', role: 'user' };
+
   try {
     const raw = localStorage.getItem('ssc_users');
-    return raw ? JSON.parse(raw) as User[] : [ { name: 'Stage Guest', email: 'guest@stagecafe.com', password: 'coffee123' } ];
-  } catch { return [ { name: 'Stage Guest', email: 'guest@stagecafe.com', password: 'coffee123' } ]; }
+    if (!raw) {
+      const list = [defaultAdmin, defaultGuest];
+      try { localStorage.setItem('ssc_users', JSON.stringify(list)); } catch {}
+      return list;
+    }
+
+    const parsed = JSON.parse(raw) as User[];
+    const hasAdmin = parsed.some(u => u.email.toLowerCase() === defaultAdmin.email.toLowerCase());
+    if (!hasAdmin) {
+      const updated = [defaultAdmin, ...parsed];
+      try { localStorage.setItem('ssc_users', JSON.stringify(updated)); } catch {}
+      return updated;
+    }
+
+    return parsed;
+  } catch {
+    return [defaultGuest];
+  }
 }
 
 function _getInitialUser(): User | null {

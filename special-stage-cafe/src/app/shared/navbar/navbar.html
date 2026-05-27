@@ -9,9 +9,30 @@
       <a routerLink="/login" routerLinkActive="text-amber-300" class="hover:text-amber-300">Login</a>
       <a routerLink="/register" routerLinkActive="text-amber-300" class="hover:text-amber-300">Register</a>
     </ng-container>
-    <a *ngIf="auth.isAuthenticated()" routerLink="/cart" routerLinkActive="text-amber-300" class="hover:text-amber-300">Cart ({{ cart.items().length }})</a>
-    <a *ngIf="auth.isAuthenticated()" routerLink="/profile" routerLinkActive="text-amber-300" class="hover:text-amber-300">Profile</a>
+    <a *ngIf="auth.isAuthenticated() && !auth.isAdmin()" routerLink="/cart" routerLinkActive="text-amber-300" class="hover:text-amber-300">Cart ({{ cart.items().length }})</a>
+
+    <button *ngIf="auth.isAuthenticated()" (click)="toggleNotifications()" [class.animate-bell]="unreadCount() > 0" class="relative inline-flex items-center px-2 py-1 hover:text-amber-300">
+      <span class="text-xl">🔔</span>
+      <span *ngIf="unreadCount() > 0" class="absolute -top-1 -right-1 bg-rose-500 text-white text-xs rounded-full px-1">{{ unreadCount() }}</span>
+    </button>
+
+    <a *ngIf="auth.isAuthenticated() && !auth.isAdmin()" routerLink="/profile" routerLinkActive="text-amber-300" class="hover:text-amber-300">Profile</a>
     <button *ngIf="auth.isAuthenticated()" (click)="logout()" class="rounded-md bg-amber-400 px-3 py-1 text-slate-950">Logout</button>
+
+    <div *ngIf="notificationsOpen()" class="absolute right-6 mt-14 w-80 bg-white text-black rounded shadow p-3 z-50">
+      <div *ngIf="notificationsList().length === 0" class="text-sm text-slate-600">No notifications</div>
+      <div *ngFor="let n of notificationsList()" class="border-b last:border-b-0 py-2">
+        <div class="flex justify-between items-start">
+          <div>
+            <div class="text-sm">{{ n.message }}</div>
+            <div class="text-xs text-slate-500">{{ n.createdAt | date:'short' }}</div>
+          </div>
+          <div class="ml-2">
+            <button *ngIf="!n.read" (click)="markRead(n.id)" class="text-xs rounded px-2 py-1 bg-emerald-500 text-white">Mark read</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </nav>  
 <div *ngIf="auth.isAuthenticated()" class="bg-slate-900 text-slate-200 px-4 py-2 text-right text-sm">

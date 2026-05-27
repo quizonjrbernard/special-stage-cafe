@@ -10,6 +10,8 @@
     "test": "ng test",
     "serve:ssr:special-stage-cafe": "node dist/special-stage-cafe/server/server.mjs",
     "serve:ssr": "npm run build:ssr && npm run serve:ssr:special-stage-cafe"
+    ,
+    "notification-stub": "node tools/notification-webhook.js"
   },
   "private": true,
   "packageManager": "npm@11.13.0",

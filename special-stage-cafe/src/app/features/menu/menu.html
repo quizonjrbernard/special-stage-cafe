@@ -8,21 +8,74 @@
     <div class="rounded-full bg-amber-100 px-4 py-2 text-sm font-semibold text-amber-900">Member access required to order</div>
   </div>
 
-  <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-    <article *ngFor="let item of menuItems" class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-lg transition hover:-translate-y-1 hover:shadow-2xl">
-      <div class="flex items-start justify-between gap-4">
-        <div>
-          <h2 class="text-2xl font-semibold text-slate-950">{{ item.title }}</h2>
-          <p class="mt-2 text-slate-500">{{ item.description }}</p>
+  <div *ngIf="auth.isAdmin(); else regularMenu">
+    <div class="space-y-4">
+      <h2 class="text-2xl font-semibold">Admin: Manage Menu Items</h2>
+      <div class="grid gap-4">
+        <div class="space-y-2">
+          <input placeholder="Title" [(ngModel)]="newItem.title" class="w-full rounded border px-3 py-2" />
+          <input placeholder="Price (e.g. AED 20)" [(ngModel)]="newItem.price" class="w-full rounded border px-3 py-2" />
+          <input placeholder="Tags (comma separated)" [(ngModel)]="newItem.tags" class="w-full rounded border px-3 py-2" />
+          <textarea placeholder="Description" [(ngModel)]="newItem.description" class="w-full rounded border px-3 py-2"></textarea>
+          <div>
+            <button (click)="addItem()" class="rounded bg-emerald-600 px-4 py-2 text-white">Add Item</button>
+          </div>
         </div>
-        <span class="rounded-full bg-slate-950 px-4 py-2 text-sm font-semibold text-white">{{ item.price }}</span>
+
+        <div class="space-y-2">
+          <div *ngFor="let item of menuItems" class="flex items-center justify-between border p-3 rounded">
+            <div>
+              <div class="font-semibold">{{ item.title }}</div>
+              <div class="text-sm text-slate-600">{{ item.price }}</div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button (click)="startEdit(item)" class="px-3 py-1 rounded bg-slate-200">Edit</button>
+              <button (click)="deleteItem(item)" class="px-3 py-1 rounded bg-red-500 text-white">Delete</button>
+            </div>
+          </div>
+
+          <div *ngIf="editing" class="border p-3 rounded">
+            <h3 class="font-semibold">Editing {{ editing.title }}</h3>
+            <input [(ngModel)]="editing.description" class="w-full rounded border px-3 py-2" />
+            <input [(ngModel)]="editing.price" class="w-full rounded border px-3 py-2" />
+            <input [(ngModel)]="editing.tags" class="w-full rounded border px-3 py-2" />
+            <div class="mt-2">
+              <button (click)="saveEdit()" class="px-4 py-2 rounded bg-emerald-600 text-white">Save</button>
+              <button (click)="cancelEdit()" class="px-4 py-2 rounded bg-slate-200 ml-2">Cancel</button>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="mt-4 flex flex-wrap gap-2">
-        <span *ngFor="let tag of item.tags" class="rounded-full bg-slate-100 px-3 py-1 text-xs uppercase tracking-[0.08em] text-slate-600">{{ tag }}</span>
-      </div>
-      <div class="mt-4 flex gap-3">
-        <button (click)="addToCart(item)" class="rounded-full bg-slate-900 px-4 py-2 text-white">Add to Cart</button>
-      </div>
-    </article>
+    </div>
   </div>
+
+  <ng-template #regularMenu>
+    <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <article *ngFor="let item of menuItems" class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-lg transition hover:-translate-y-1 hover:shadow-2xl">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-semibold text-slate-950">{{ item.title }}</h2>
+            <p class="mt-2 text-slate-500">{{ item.description }}</p>
+          </div>
+          <span class="rounded-full bg-slate-950 px-4 py-2 text-sm font-semibold text-white">{{ item.price }}</span>
+        </div>
+        <div class="mt-4 flex flex-wrap gap-2">
+          <span *ngFor="let tag of item.tags" class="rounded-full bg-slate-100 px-3 py-1 text-xs uppercase tracking-[0.08em] text-slate-600">{{ tag }}</span>
+        </div>
+        <div class="mt-4 flex items-center gap-3">
+          <ng-container *ngIf="quantity(item) > 0; else addButton">
+            <button (click)="decreaseQuantity(item)" class="rounded-full border border-slate-300 px-3 py-2 text-slate-700">-</button>
+            <div class="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2">
+              <span class="font-semibold">Qty</span>
+              <span>{{ quantity(item) }}</span>
+            </div>
+            <button (click)="addToCart(item)" class="rounded-full bg-slate-900 px-3 py-2 text-white">+</button>
+          </ng-container>
+          <ng-template #addButton>
+            <button (click)="addToCart(item)" class="rounded-full bg-slate-900 px-4 py-2 text-white">Add to Cart</button>
+          </ng-template>
+        </div>
+      </article>
+    </div>
+  </ng-template>
 </section>

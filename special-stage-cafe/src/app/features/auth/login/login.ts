@@ -27,6 +27,11 @@ export class LoginComponent {
       return;
     }
 
-    this.router.navigate(['/menu']);
+    // Redirect based on role: admins -> landing (home), users -> menu
+    if (this.auth.isAdmin()) {
+      this.router.navigate(['/']);
+    } else {
+      this.router.navigate(['/menu']);
+    }
   }
 }

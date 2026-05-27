@@ -37,6 +37,26 @@ export class CartService {
     });
   }
 
+  decrement(title: string) {
+    this.itemsSignal.update(list => {
+      const updated = list
+        .map(i => i.title === title ? { ...i, quantity: i.quantity - 1 } : i)
+        .filter(i => i.quantity > 0);
+      try { localStorage.setItem(this.storageKey, JSON.stringify(updated)); } catch {}
+      return updated;
+    });
+  }
+
+  setQuantity(title: string, quantity: number) {
+    this.itemsSignal.update(list => {
+      const updated = list
+        .map(i => i.title === title ? { ...i, quantity } : i)
+        .filter(i => i.quantity > 0);
+      try { localStorage.setItem(this.storageKey, JSON.stringify(updated)); } catch {}
+      return updated;
+    });
+  }
+
   clear() {
     this.itemsSignal.set([]);
     try { localStorage.removeItem(this.storageKey); } catch {}

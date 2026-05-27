@@ -11,7 +11,17 @@ export interface MenuItem {
   providedIn: 'root'
 })
 export class MenuService {
-  menuItems: MenuItem[] = [
+  private STORAGE_KEY = 'ssc_menu_items';
+
+  menuItems: MenuItem[] = this._getInitialMenu();
+
+  private _getInitialMenu(): MenuItem[] {
+    try {
+      const raw = localStorage.getItem(this.STORAGE_KEY);
+      if (raw) return JSON.parse(raw) as MenuItem[];
+    } catch {}
+
+    const seed: MenuItem[] = [
     {
       title: 'Cappuccino',
       description: 'Espresso with steamed milk and a rich foam cap.',
@@ -42,5 +52,28 @@ export class MenuService {
       price: 'AED 21',
       tags: ['tea', 'spiced', 'wellness']
     }
-  ];
+    ];
+
+    try { localStorage.setItem(this.STORAGE_KEY, JSON.stringify(seed)); } catch {}
+    return seed;
+  }
+
+  private _persist(items: MenuItem[]) {
+    try { localStorage.setItem(this.STORAGE_KEY, JSON.stringify(items)); } catch {}
+  }
+
+  addItem(item: MenuItem) {
+    this.menuItems = [item, ...this.menuItems];
+    this._persist(this.menuItems);
+  }
+
+  updateItem(title: string, updated: Partial<MenuItem>) {
+    this.menuItems = this.menuItems.map(i => i.title === title ? { ...i, ...updated } : i);
+    this._persist(this.menuItems);
+  }
+
+  deleteItem(title: string) {
+    this.menuItems = this.menuItems.filter(i => i.title !== title);
+    this._persist(this.menuItems);
+  }
 }
